@@ -19,8 +19,8 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
-            "outputPath": {"base": "docs","browser": ""},
-            "baseHref": "/dostaffkin/",
+            "outputPath": {"base": "docs","browser": ""},            
+            "baseHref": "/noc-cso/",
             "assets": [
               {
                 "glob": "**/*",
@@ -48,10 +48,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "dostaffkin:build:production"
+              "buildTarget": "noc-cso:build:production"
             },
             "development": {
-              "buildTarget": "dostaffkin:build:development"
+              "buildTarget": "noc-cso:build:development"
             }
           },
           "defaultConfiguration": "development"
