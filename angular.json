@@ -15,12 +15,13 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "browser": "src/main.ts",
+            "outputPath": "docs",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
-            "outputPath": {"base": "docs","browser": ""},            
-            "baseHref": "/noc-cso/",
             "assets": [
               {
                 "glob": "**/*",
@@ -30,34 +31,51 @@
             "styles": [
               "src/styles.css",
               "node_modules/ngx-toastr/toastr.css"
-            ]
+            ],
+            "scripts": []
           },
           "configurations": {
             "production": {
-              "outputHashing": "all"
+              "baseHref": "/noc-cso/",
+              "deployUrl": "/noc-cso/",
+              "outputHashing": "all",
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": false,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "2mb"
+                }
+              ]
             },
             "development": {
               "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "namedChunks": true,
+              "vendorChunk": true,
+              "buildOptimizer": false
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "noc-cso:build:production"
+              "buildTarget": "dostaffkin:build:production"
             },
             "development": {
-              "buildTarget": "noc-cso:build:development"
+              "buildTarget": "dostaffkin:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular-devkit/build-angular:karma"
         }
       }
     }
