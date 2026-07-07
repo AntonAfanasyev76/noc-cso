@@ -1,0 +1,146 @@
+<div class="container">
+    <app-header />
+    <main class="find-content">
+        <!-- Карточка поиска -->
+        <section class="find-card find-search">
+            <div class="find-title">🔍 Поиск СЗО</div>
+            <div class="find-action">
+                <div class="find-field">
+                    <input 
+                        id="szoNumber" 
+                        [(ngModel)]="szoNumber" 
+                        placeholder="Введите номер СЗО (например: SZO-001)"
+                        autocomplete="off"
+                        (keyup.enter)="findSzo()"
+                    />
+                </div>
+                <button 
+                    class="button find-button" 
+                    type="button" 
+                    (click)="findSzo()"
+                    [disabled]="isLoading()"
+                >
+                    @if (isLoading()) {
+                        <span>⏳ Поиск...</span>
+                    } @else {
+                        <span>🔍 Найти</span>
+                    }
+                </button>
+            </div>
+        </section>
+
+        <!-- Результат поиска -->
+        @if (szoData) {
+            <section class="find-card find-result">
+                <!-- Заголовок с номером СЗО -->
+                <div class="find-result-header">
+                    <div class="find-szo-number">
+                        <span class="label">Номер СЗО:</span>
+                        <span class="value">{{ szoData.number }}</span>
+                    </div>
+                    <div class="find-status-badge" [class]="getStatusClass(szoData.hasProblem)">
+                        {{ getStatusText(szoData.hasProblem) }}
+                    </div>
+                </div>
+
+                <!-- Информация о СЗО -->
+                <div class="find-info">
+                    <div class="find-info-row">
+                        <span class="info-label">📍 Адрес:</span>
+                        <span class="info-value">{{ szoData.address }}</span>
+                    </div>
+                    
+                    @if (!isEditing()) {
+                        <!-- Режим просмотра -->
+                        <div class="find-info-row">
+                            <span class="info-label">📝 Примечание:</span>
+                            <span class="info-value">{{ szoData.note || '—' }}</span>
+                        </div>
+                        <div class="find-info-row">
+                            <span class="info-label">🕐 Обновлено:</span>
+                            <span class="info-value">{{ formatDate(szoData.updatedAt) }}</span>
+                        </div>
+                        <div class="find-info-row">
+                            <span class="info-label">📅 Создано:</span>
+                            <span class="info-value">{{ formatDate(szoData.createdAt) }}</span>
+                        </div>
+                        
+                        <button class="button edit-button" type="button" (click)="startEdit()">
+                            ✏️ Изменить статус
+                        </button>
+                    } @else {
+                        <!-- Режим редактирования -->
+                        <div class="edit-section">
+                            <div class="edit-title">✏️ Редактирование статуса</div>
+                            
+                            <div class="edit-field-group">
+                                <label class="edit-label">Состояние СЗО:</label>
+                                <div class="status-selector">
+                                    <div 
+                                        class="status-option" 
+                                        [class.active]="!tempStatus"
+                                        (click)="tempStatus = false"
+                                    >
+                                        ✅ Нет проблем
+                                    </div>
+                                    <div 
+                                        class="status-option" 
+                                        [class.active]="tempStatus"
+                                        [class.problem]="tempStatus"
+                                        (click)="tempStatus = true"
+                                    >
+                                        ⚠️ Есть проблема
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="edit-field-group">
+                                <label class="edit-label">📝 Примечание:</label>
+                                <textarea 
+                                    [(ngModel)]="tempNote" 
+                                    placeholder="Дополнительная информация о состоянии СЗО"
+                                    rows="3"
+                                    class="edit-textarea"
+                                ></textarea>
+                            </div>
+
+                            <div class="edit-actions">
+                                <button 
+                                    class="button save-button" 
+                                    type="button" 
+                                    (click)="saveChanges()"
+                                    [disabled]="isLoading()"
+                                >
+                                    @if (isLoading()) {
+                                        <span>⏳ Сохранение...</span>
+                                    } @else {
+                                        <span>💾 Сохранить</span>
+                                    }
+                                </button>
+                                <button 
+                                    class="button button-white cancel-button" 
+                                    type="button" 
+                                    (click)="cancelEdit()"
+                                    [disabled]="isLoading()"
+                                >
+                                    Отмена
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+
+        <!-- Сообщение, если СЗО не найдено -->
+        @if (!isLoading() && szoData === null && szoNumber) {
+            <section class="find-card find-not-found">
+                <div class="not-found-icon">🔍</div>
+                <div class="not-found-title">СЗО не найдено</div>
+                <div class="not-found-text">
+                    Проверьте правильность номера и попробуйте снова
+                </div>
+            </section>
+        }
+    </main>
+</div>

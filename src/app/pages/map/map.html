@@ -1,0 +1,53 @@
+<div class="map-container">
+    <app-header />
+    
+    <!-- Карта -->
+    <div id="map" #mapContainer></div>
+
+    <!-- Загрузка -->
+    @if (isLoading()) {
+        <div class="loading-overlay">
+            <div class="loading-spinner">⏳</div>
+            <div class="loading-text">Загрузка карты проблем...</div>
+        </div>
+    }
+
+    <!-- Боковая панель со списком проблем -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">
+                ⚠️ Проблемные СЗО
+                <span class="badge">{{ problematicSZO.length }}</span>
+            </div>
+            <div class="sidebar-subtitle">Нажмите на объект, чтобы центрировать карту</div>
+        </div>
+
+        <div class="sidebar-content">
+            @if (problematicSZO.length === 0) {
+                <div class="empty-state">
+                    <div class="empty-icon">✅</div>
+                    <div class="empty-title">Все СЗО в порядке</div>
+                    <div class="empty-text">Проблем не обнаружено</div>
+                </div>
+            } @else {
+                @for (szo of problematicSZO; track szo.id) {
+                    <div 
+                        class="szo-item" 
+                        [class.active]="selectedSZO?.id === szo.id"
+                        (click)="centerOnSZO(szo)"
+                    >
+                        <div class="szo-item-header">
+                            <div class="szo-item-number">{{ szo.number }}</div>
+                            <div class="szo-item-status">⚠️</div>
+                        </div>
+                        <div class="szo-item-address">{{ szo.address }}</div>
+                        @if (szo.note) {
+                            <div class="szo-item-note">{{ szo.note }}</div>
+                        }
+                        <div class="szo-item-date">🕐 {{ formatDate(szo.updatedAt) }}</div>
+                    </div>
+                }
+            }
+        </div>
+    </aside>
+</div>

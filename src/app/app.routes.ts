@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
-import { Order } from './pages/order/order';
-import { Track } from './pages/track/track';
+import { AddSzo } from './pages/add-szo/add-szo';
+import { FindSzo } from './pages/find-szo/find-szo';
+import { Map } from './pages/map/map';
 
 export const routes: Routes = [
   {
@@ -9,16 +10,19 @@ export const routes: Routes = [
     component: Home
   },
   {
-    path: 'order',
-    component: Order
+    path: 'add-szo',
+    component: AddSzo
   },
   {
-    path: 'track',
-    component: Track
+    path: 'find-szo',
+    component: FindSzo
+  },
+  {
+    path: 'map',
+    component: Map
   },
   {
     path: '**',
     redirectTo: ''
   }
 ];
-

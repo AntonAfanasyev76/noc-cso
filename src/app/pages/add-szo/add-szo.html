@@ -1,0 +1,141 @@
+<div id="map" #mapContainer></div>
+
+<app-header />
+
+<aside class="main" id="sidebar">
+    <div class="main-header">
+        <div class="main-title">➕ Добавление СЗО</div>
+        <div class="main-text">Заполните информацию о социально-значимом объекте</div>
+    </div>
+    <div class="main-content">
+        <form [formGroup]="szoForm" (ngSubmit)="onSubmit()">
+            <!-- Номер СЗО -->
+            <div class="main-field-group">
+                <div class="main-block-title">Номер СЗО</div>
+                <div class="main-field">
+                    <input 
+                        id="szoNumber" 
+                        formControlName="number" 
+                        placeholder="Введите номер СЗО (например: SZO-001)" 
+                        autocomplete="off"
+                        [class.is-invalid]="szoForm.get('number')?.invalid && szoForm.get('number')?.touched"
+                    />
+                </div>
+                @if (szoForm.get('number')?.invalid && szoForm.get('number')?.touched) {
+                    <label class="input-error">Введите номер СЗО (минимум 3 символа)</label>
+                }
+            </div>
+
+            <!-- Адрес -->
+            <div class="main-field-group">
+                <div class="main-block-title">Адрес расположения</div>
+                <div class="main-field">
+                    <div class="main-pin"></div>
+                    <input 
+                        id="szoAddress" 
+                        formControlName="address" 
+                        placeholder="Введите адрес расположения СЗО" 
+                        autocomplete="off"
+                        [class.is-invalid]="szoForm.get('address')?.invalid && szoForm.get('address')?.touched"
+                    />
+                    <button 
+                        type="button" 
+                        class="clear-button" 
+                        (click)="clearMap()"
+                        *ngIf="szoForm.get('address')?.value"
+                    >
+                        ✕
+                    </button>
+                </div>
+                @if (szoForm.get('address')?.invalid && szoForm.get('address')?.touched) {
+                    <label class="input-error">Введите адрес расположения СЗО</label>
+                }
+                <div class="field-hint">💡 Нажмите на карту, чтобы выбрать адрес автоматически</div>
+            </div>
+
+            <!-- Статус -->
+            <div class="main-field-group">
+                <div class="main-block-title">Состояние СЗО</div>
+                <div class="status-selector">
+                    @for (option of statusOptions; track option.value) {
+                        <div 
+                            class="status-card" 
+                            [class.is-active]="szoForm.get('hasProblem')?.value === option.value"
+                            (click)="szoForm.patchValue({ hasProblem: option.value })"
+                        >
+                            <div class="status-label">{{ option.label }}</div>
+                            <div class="status-icon" [class.problem]="option.value" [class.ok]="!option.value">
+                                {{ option.value ? '⚠️' : '✅' }}
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Примечание -->
+            <div class="main-field-group">
+                <div class="main-block-title">📝 Примечание</div>
+                <div class="main-field textarea">
+                    <textarea 
+                        id="szoNote" 
+                        formControlName="note" 
+                        placeholder="Дополнительная информация о состоянии СЗО (необязательно)"
+                        rows="3"
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Информация о метке на карте -->
+            @if (szoForm.get('address')?.value && szoForm.get('address')?.valid) {
+                <div class="map-info">
+                    <div class="map-info-title">📍 Позиция на карте</div>
+                    <div class="map-info-status">
+                        <span>Статус: </span>
+                        <span [class.text-danger]="szoForm.get('hasProblem')?.value" [class.text-success]="!szoForm.get('hasProblem')?.value">
+                            {{ szoForm.get('hasProblem')?.value ? '⚠️ Проблема' : '✅ Нет проблем' }}
+                        </span>
+                    </div>
+                    @if (szoForm.get('note')?.value) {
+                        <div class="map-info-note">
+                            <span>📝 Примечание: </span>
+                            <span>{{ szoForm.get('note')?.value }}</span>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- Кнопки -->
+            <div class="main-actions">
+                <button 
+                    class="button submit-button" 
+                    type="submit" 
+                    [disabled]="szoForm.invalid || isSubmitting()"
+                >
+                    @if (isSubmitting()) {
+                        <span>⏳ Сохранение...</span>
+                    } @else {
+                        <span>💾 Добавить СЗО</span>
+                    }
+                </button>
+                <button 
+                    class="button button-white reset-button" 
+                    type="button" 
+                    (click)="szoForm.reset({ hasProblem: false }); clearMap()"
+                    [disabled]="isSubmitting()"
+                >
+                    🗑️ Очистить форму
+                </button>
+            </div>
+
+            <!-- Сообщение об успехе -->
+            @if (szoId()) {
+                <div class="success-message">
+                    <div class="success-icon">✅</div>
+                    <div class="success-title">СЗО успешно добавлено!</div>
+                    <div class="success-subtitle">Номер СЗО: <strong>{{ szoId() }}</strong></div>
+                    <button class="button" type="button" routerLink="/find-szo">🔍 Найти это СЗО</button>
+                </div>
+            }
+        </form>
+    </div>
+</aside>

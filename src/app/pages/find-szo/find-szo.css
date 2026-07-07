@@ -1,0 +1,291 @@
+.container {
+    background: #F4F4F4;
+    min-height: 100vh;
+    padding: 170px 0 50px 0;
+}
+
+.find-content {
+    width: 593px;
+    margin: 0 auto;
+}
+
+.find-card {
+    width: 100%;
+    border-radius: 18px;
+    box-shadow: 0 7px 20px 0 #0000002E;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+}
+
+.find-title {
+    font-size: 20px;
+    line-height: 100%;
+    font-weight: bold;
+    border-bottom: 1px solid #EEEEEE;
+    padding: 20px;
+}
+
+.find-action {
+    padding: 20px;
+}
+
+.find-field {
+    margin-bottom: 10px;
+    border: 1px solid #1111111A;
+    background: #FAFAFA;
+    border-radius: 10px;
+    padding: 10px 12px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.find-field:focus-within {
+    border-color: rgba(0, 0, 0, 0.20);
+    box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.35);
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.find-field input {
+    width: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #111111;
+    font-family: inherit;
+}
+
+.find-field input::placeholder {
+    color: #7C7C7C;
+}
+
+.find-button {
+    width: 100%;
+    height: 50px;
+}
+
+/* Результат поиска */
+.find-result-header {
+    padding: 20px;
+    border-bottom: 1px solid #EEEEEE;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.find-szo-number {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.find-szo-number .label {
+    color: #7C7C7C;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.find-szo-number .value {
+    color: #111111;
+}
+
+.find-status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status-problem {
+    background: #FDE8E8;
+    color: #E03131;
+    border: 1px solid #FF6B6B;
+}
+
+.status-ok {
+    background: #E8FDE8;
+    color: #2B8A3E;
+    border: 1px solid #51CF66;
+}
+
+.find-info {
+    padding: 20px;
+}
+
+.find-info-row {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px solid #F5F5F5;
+}
+
+.find-info-row:last-of-type {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #7C7C7C;
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.info-value {
+    color: #111111;
+    word-break: break-word;
+}
+
+.edit-button {
+    width: 100%;
+    margin-top: 15px;
+    height: 44px;
+}
+
+/* Режим редактирования */
+.edit-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 2px dashed #E8E8E7;
+}
+
+.edit-title {
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 15px;
+    color: #111111;
+}
+
+.edit-field-group {
+    margin-bottom: 15px;
+}
+
+.edit-label {
+    display: block;
+    font-size: 13px;
+    color: #7C7C7C;
+    margin-bottom: 6px;
+}
+
+.status-selector {
+    display: grid;
+    gap: 6px;
+    grid-template-columns: 1fr 1fr;
+}
+
+.status-option {
+    border: 2px solid #E8E8E7;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    background: #FFFFFF;
+}
+
+.status-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.status-option.active {
+    border-color: #51CF66;
+    background: #E8FDE8;
+}
+
+.status-option.active.problem {
+    border-color: #FF6B6B;
+    background: #FDE8E8;
+}
+
+.edit-textarea {
+    width: 100%;
+    border: 1px solid #1111111A;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 72px;
+    background: #FAFAFA;
+    transition: all 0.2s ease;
+}
+
+.edit-textarea:focus {
+    outline: none;
+    border-color: rgba(0, 0, 0, 0.20);
+    box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.35);
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.save-button {
+    flex: 1;
+    height: 44px;
+}
+
+.cancel-button {
+    height: 44px;
+    min-width: 120px;
+}
+
+/* СЗО не найдено */
+.find-not-found {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.not-found-icon {
+    font-size: 64px;
+    margin-bottom: 15px;
+}
+
+.not-found-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #111111;
+    margin-bottom: 8px;
+}
+
+.not-found-text {
+    font-size: 14px;
+    color: #7C7C7C;
+}
+
+/* Адаптивность */
+@media (max-width: 767px) {
+    .container {
+        padding: 130px 0 50px 0;
+    }
+
+    .find-content {
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .find-result-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .status-selector {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-actions {
+        flex-direction: column;
+    }
+
+    .cancel-button {
+        min-width: auto;
+    }
+}

@@ -1,4 +1,3 @@
-
 .header {
     border-radius: 18px;
     box-shadow: 0 7px 20px 0 #0000002E;
@@ -32,6 +31,7 @@
     place-items: center;
     font-weight: bold;
     color: #111;
+    font-size: 20px;
 }
 
 .header-title {
@@ -55,6 +55,11 @@
     font-size: 14px;
     color: #111111;
     text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.header-link:hover {
+    color: #FFCC00;
 }
 
 @media (max-width: 767px) {
@@ -89,4 +94,3 @@
         margin: 0 0 0 10px;
     }
 }
-
