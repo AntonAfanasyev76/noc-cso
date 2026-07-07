@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, inject, signal, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Header } from '../../header/header';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,7 @@ declare var ymaps: any;
   templateUrl: './add-szo.html',
   styleUrl: './add-szo.css',
 })
-export class AddSzo implements OnInit {
+export class AddSzo implements OnInit, AfterViewInit {
   @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef;
 
   toastr = inject(ToastrService);
@@ -25,7 +25,6 @@ export class AddSzo implements OnInit {
   public szoId: any = signal(null);
   public isSubmitting = signal(false);
 
-  // Список статусов для селектора
   public statusOptions = [
     { value: false, label: '✅ Нет проблем' },
     { value: true, label: '⚠️ Есть проблема' }
@@ -46,10 +45,52 @@ export class AddSzo implements OnInit {
   ngOnInit() {
     this.initMap();
     
-    // Следим за изменением адреса для обновления карты
     this.szoForm.get('address')?.valueChanges.subscribe((address) => {
       if (address && address.length > 5) {
         this.searchAddress(address);
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    this.initSuggestions();
+  }
+
+  private initSuggestions() {
+    ymaps.ready(() => {
+      const addressInput = document.getElementById('szoAddress');
+      if (addressInput) {
+        try {
+          // Используем SuggestView с ключом для подсказок
+          const suggestView = new ymaps.SuggestView(addressInput, {
+            provider: {
+              suggest: function(request: string, options: any) {
+                // Используем наш ключ #3 для геосаджеста
+                return ymaps.suggest(request, {
+                  results: 5,
+                  boundedBy: options.boundedBy,
+                  strictBounds: options.strictBounds,
+                  apikey: '2d59de13-a95f-40be-9dca-36a68fcd6bdd'
+                });
+              }
+            }
+          });
+          
+          suggestView.events.add('select', (event: any) => {
+            const address = event.get('item')?.value ?? '';
+            this.szoForm.patchValue({ address });
+            this.searchAddress(address);
+          });
+        } catch (e) {
+          console.warn('SuggestView не доступен, используем стандартный:', e);
+          // Fallback на стандартный SuggestView
+          const suggestView = new ymaps.SuggestView(addressInput);
+          suggestView.events.add('select', (event: any) => {
+            const address = event.get('item')?.value ?? '';
+            this.szoForm.patchValue({ address });
+            this.searchAddress(address);
+          });
+        }
       }
     });
   }
@@ -62,7 +103,6 @@ export class AddSzo implements OnInit {
         controls: ['zoomControl', 'fullscreenControl']
       });
 
-      // Добавляем обработчик клика по карте для выбора адреса
       this.map.events.add('click', (e: any) => {
         const coords = e.get('coords');
         this.getAddressByCoords(coords);
@@ -74,7 +114,8 @@ export class AddSzo implements OnInit {
     if (!this.map) return;
 
     ymaps.geocode(query, {
-      results: 1
+      results: 1,
+      apikey: 'dd7c89a5-fa86-4788-8e7f-26b2416b281e' // ключ #1 для геокодера
     }).then((res: any) => {
       const firstGeoObject = res.geoObjects.get(0);
       if (firstGeoObject) {
@@ -86,7 +127,9 @@ export class AddSzo implements OnInit {
   }
 
   private getAddressByCoords(coords: number[]) {
-    ymaps.geocode(coords).then((res: any) => {
+    ymaps.geocode(coords, {
+      apikey: 'dd7c89a5-fa86-4788-8e7f-26b2416b281e' // ключ #1 для геокодера
+    }).then((res: any) => {
       const firstGeoObject = res.geoObjects.get(0);
       if (firstGeoObject) {
         const address = firstGeoObject.getAddressLine();
@@ -101,7 +144,6 @@ export class AddSzo implements OnInit {
       this.map.geoObjects.remove(this.placemark);
     }
 
-    // Создаем метку с информацией
     this.placemark = new ymaps.Placemark(coords, {
       balloonContent: `
         <div style="padding: 10px;">
@@ -118,11 +160,9 @@ export class AddSzo implements OnInit {
 
     this.map.geoObjects.add(this.placemark);
 
-    // Обновляем метку при изменении статуса
     this.szoForm.get('hasProblem')?.valueChanges.subscribe((hasProblem) => {
       if (this.placemark) {
         this.placemark.options.set('preset', hasProblem ? 'islands#redIcon' : 'islands#greenIcon');
-        // Обновляем balloon
         this.placemark.properties.set('balloonContent', `
           <div style="padding: 10px;">
             <strong>Адрес:</strong> ${this.szoForm.get('address')?.value}<br>
@@ -133,7 +173,6 @@ export class AddSzo implements OnInit {
       }
     });
 
-    // Обновляем метку при изменении примечания
     this.szoForm.get('note')?.valueChanges.subscribe((note) => {
       if (this.placemark) {
         const hasProblem = this.szoForm.get('hasProblem')?.value;
@@ -158,7 +197,6 @@ export class AddSzo implements OnInit {
 
     const formValue = this.szoForm.value;
     
-    // Получаем координаты, если есть метка
     let latitude: number | undefined;
     let longitude: number | undefined;
     if (this.placemark) {
@@ -190,7 +228,6 @@ export class AddSzo implements OnInit {
         hasProblem: false
       });
       
-      // Очищаем метку с карты
       if (this.placemark) {
         this.map.geoObjects.remove(this.placemark);
         this.placemark = null;

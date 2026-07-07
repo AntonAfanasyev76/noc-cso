@@ -35,7 +35,7 @@ export class Map implements OnInit {
   private loadData() {
     this.isLoading.set(true);
     
-    this.szoApi.getProblematicSZO().subscribe((data) => {
+    this.szoApi.getProblematicSZO().subscribe((data: SZO[]) => {
       this.problematicSZO = data;
       this.isLoading.set(false);
       
@@ -147,6 +147,7 @@ export class Map implements OnInit {
     return placemark;
   }
 
+  // Метод formatDate - публичный, чтобы был доступен в шаблоне
   public formatDate(dateString: string): string {
     if (!dateString) return '—';
     const date = new Date(dateString);
